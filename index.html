@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scalpel | Skill Dissector</title>
+  <meta name="description" content="Dissect a Claude skill from a zip or pasted SKILL.md: router quality, body structure, scripts and references, and the caveats to fix before it ships">
+  <meta property="og:title" content="Scalpel: Skill Dissector">
+  <meta property="og:description" content="Drop a skill zip or paste its SKILL.md, get the caveats to fix before it ships">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://scalpel.neorgon.com/">
+  <meta property="og:site_name" content="Neorgon">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Scalpel: Skill Dissector">
+  <meta name="twitter:description" content="Drop a skill zip or paste its SKILL.md, get the caveats to fix before it ships">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://scalpel.neorgon.com/">
+  <meta property="og:locale" content="en_US">
+  <meta name="theme-color" content="#040714">
+  <meta property="og:image" content="https://scalpel.neorgon.com/og-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Scalpel">
+  <meta name="twitter:image" content="https://scalpel.neorgon.com/og-preview.jpg">
+  <meta name="neo-version" content="1.0.0">
+  <link rel="icon" type="image/x-icon" href="https://cdn.neorgon.org/v1.0.0/favicon.ico" />
+  <!-- Fleet design tokens: canonical, do not redeclare locally (PROJECTS.md section 5) -->
+  <link rel="stylesheet" href="https://cdn.neorgon.org/v1.0.0/styles/base.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Neorgon Header Kit (vendored; ?header=live swaps CSS to CDN). Keep after style.css: the kit owns the header. -->
+  <script>(function(){var m=location.search.match(/[?&]theme=([\w-]+)/)||document.cookie.match(/(?:^|;\s*)neo_theme=([\w-]+)/);if(m&&m[1]!=='default')document.documentElement.dataset.theme=decodeURIComponent(m[1]);})();</script>
+  <link rel="stylesheet" href="css/neorgon-header.css">
+  <link rel="stylesheet" href="css/neorgon-themes.css">
+  <link rel="stylesheet" href="https://cdn.neorgon.org/v1.0.0/header/season.css">
+  <script defer src="js/neorgon-header.js"></script>
+  <!-- Neorgon Footer Kit (vendored). Pins the footer to the viewport floor on short
+       pages and builds the meta bar + back-to-top. See packages/neorgon-ui/footer/README.md. -->
+  <link rel="stylesheet" href="css/neorgon-footer.css">
+  <script defer src="js/neorgon-footer.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Scalpel",
+    "description": "Dissect a Claude skill from a zip or pasted SKILL.md: router quality, body structure, scripts and references, and the caveats to fix before it ships",
+    "url": "https://scalpel.neorgon.com/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "Neorgon", "url": "https://neorgon.com/" }
+  }
+  </script>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="header-bar" data-header-mode="app">
+    <div class="header-logo">
+      <a href="https://neorgon.com/" target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn.neorgon.org/v1.0.0/energon-classic-logo.png" class="header-logo-img" alt="Logo">
+      </a>
+      <a href="./" class="header-title-link">
+        <h1>Scalpel</h1>
+        <div class="header-subtitle">Read the skill before it ships</div>
+      </a>
+    </div>
+
+    <div class="header-right">
+      <div class="header-actions">
+        <button type="button" class="btn btn--ghost btn--sm" id="exampleBtn" data-keep-mobile>Example</button>
+        <a class="btn btn--ghost btn--sm" href="#rubric">Rubric</a>
+      </div>
+      <a class="header-home" href="https://neorgon.com/" title="neorgon.com" aria-label="Neorgon home">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="container stack">
+
+      <section class="section" id="inputSection" aria-labelledby="input-title">
+        <div class="section__titles">
+          <h2 class="section__title" id="input-title">Put the skill on the table</h2>
+          <p class="section__lead">
+            Zip the skill folder and drop it here, or paste a SKILL.md on its own.
+            Every byte is read in this tab; nothing is uploaded anywhere.
+          </p>
+        </div>
+
+        <p class="last-summary" id="lastSummary" hidden></p>
+
+        <div class="input-grid">
+          <div class="drop-zone" id="dropZone" role="button" tabindex="0"
+               aria-label="Drop a zip of the skill folder, or press Enter to pick one">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"/>
+              <path d="M12 11v6M9.5 13.5 12 11l2.5 2.5"/>
+            </svg>
+            <p class="drop-zone-title">Drop a .zip of the skill folder</p>
+            <p class="drop-zone-sub">
+              or click to pick one. Unix mode bits survive the trip, so
+              "this script is not executable" arrives with evidence.
+            </p>
+          </div>
+
+          <div class="paste-panel card">
+            <label class="paste-label" for="pasteBox">No zip at hand? Paste the SKILL.md, frontmatter included.</label>
+            <textarea id="pasteBox" spellcheck="false"
+              placeholder="---&#10;name: my-skill&#10;description: &quot;Use when...&quot;&#10;---&#10;&#10;# my-skill: what it does"></textarea>
+            <div class="toolbar">
+              <button type="button" class="btn btn--primary" id="dissectBtn">Dissect</button>
+              <span class="paste-hint">Ctrl+Enter or Cmd+Enter also cuts</span>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="zipInput" accept=".zip" hidden>
+
+        <div class="example-row">
+          <span class="example-label">Nothing on hand? Open an example:</span>
+          <button type="button" class="btn btn--ghost btn--sm" id="exampleGoodBtn">Well-formed skill</button>
+          <button type="button" class="btn btn--ghost btn--sm" id="exampleBrokenBtn">Broken skill</button>
+        </div>
+      </section>
+
+      <section class="section" id="reportSection" hidden aria-labelledby="report-title">
+        <div class="section__titles">
+          <h2 class="section__title" id="report-title">The caveat report</h2>
+          <p class="section__lead">Grouped by severity; every finding cites the rule it comes from.</p>
+        </div>
+        <div class="stack stack--tight" id="reportBody"></div>
+      </section>
+
+      <section class="section" id="rubric" aria-labelledby="rubric-title">
+        <div class="section__titles">
+          <h2 class="section__title" id="rubric-title">The rubric</h2>
+          <p class="section__lead">
+            A caveat without a rule behind it is an opinion. Every check below names
+            its source: the fleet's skill-authoring guide (authoring.md), the forge
+            CLAUDE.md, or the fleet skill that carries the rule. This list is rendered
+            from the same table the analyzer runs, so it cannot drift from the code.
+          </p>
+        </div>
+        <div id="rubricList" class="rubric-grid"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="neo-footer" data-footer-mode="minimal">
+    Runs entirely in your browser: skills you drop here are read locally and never uploaded.
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
